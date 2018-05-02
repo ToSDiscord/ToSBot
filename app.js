@@ -141,17 +141,27 @@ client.on("message", async message => {
   message.channel.send(emojiList);
  }
 
-if(message.content === "ayy") {
-   const ayy = client.emojis.find("name", "ayy");
-   message.reply(`${ayy} LMAO`);
-}
+const cheerio = require('cheerio'),
+      snekfetch = require('snekfetch'),
+      querystring = require('querystring');
 
-if(message.content === ":poop:") {
-  const poop = client.emojis.find("poop");
-  message.reply(:poop:);
+async function googleCommand(msg, args) {
+
+   let searchMessage = await <Message>.reply('Searching... Sec.');
+   let searchUrl = `https://www.google.com/search?q=${encodeURIComponent(msg.content)}`;
+
+   return snekfetch.get(searchUrl).then((result) => {
+
+      let $ = cheerio.load(result.text);
+
+      let googleData = $('.r').first().find('a').first().attr('href');
+
+     googleData = querystring.parse(googleData.replace('/url?', ''));
+      searchMessage.edit(`Result found!\n${googleData.q}`);
+
+  }).catch((err) => {
+     searchMessage.edit('No results found!');
+  });
 }
-  
- 
-});
 
 client.login(config.token);
