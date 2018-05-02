@@ -27,7 +27,7 @@ client.on("guildCreate", guild => {
 
 client.on("guildDelete", guild => {
   // this event triggers when the bot is removed from a guild.
-  console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
+  console.log(`This user has been removed from: ${guild.name} (id: ${guild.id})`);
   client.user.setActivity(`Serving ${client.guilds.size} servers`);
 });
 
@@ -73,7 +73,7 @@ client.on("message", async message => {
     // This command must be limited to mods and admins. In this example we just hardcode the role names.
     // Please read on Array.some() to understand this bit: 
     // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/some?
-    if(!message.member.roles.some(r=>["Administrator", "Moderator"].includes(r.name)) )
+    if(!message.member.roles.some(r=>["Administrator", "Moderator", "Counselor"].includes(r.name)) )
       return message.reply("Sorry, you don't have permissions to use this!");
     
     // Let's first check if we have a member and if we can kick them!
@@ -83,7 +83,7 @@ client.on("message", async message => {
     if(!member)
       return message.reply("Please mention a valid member of this server");
     if(!member.kickable) 
-      return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?");
+      return message.reply("What are you doing? You cannot do that u goober! SIKE ur mom!!");
     
     // slice(1) removes the first part, which here should be the user mention or ID
     // join(' ') takes all the various parts to make it a single string.
@@ -92,8 +92,11 @@ client.on("message", async message => {
     
     // Now, time for a swift kick in the nuts!
     await member.kick(reason)
-      .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
-    message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
+      .catch(error => message.reply(`Sorry peasant ${message.author} I couldn't kick this user because of : ${error}`));
+    message.reply(`${member.user.tag} has been kicked in the butt by ${message.author.tag} because: ${reason}`);
+
+  if (message.mentions.members.size === 0)
+    return message.reply("Please mention a user to kick dummy");
 
   }
   
@@ -101,20 +104,20 @@ client.on("message", async message => {
     // Most of this command is identical to kick, except that here we'll only let admins do it.
     // In the real world mods could ban too, but this is just an example, right? ;)
     if(!message.member.roles.some(r=>["Administrator"].includes(r.name)) )
-      return message.reply("Sorry, you don't have permissions to use this!");
+      return message.reply("You cannot do this u crazy person!! Think before u try and fail.");
     
     let member = message.mentions.members.first();
     if(!member)
       return message.reply("Please mention a valid member of this server");
     if(!member.bannable) 
-      return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
+      return message.reply("Sorry, try again next time....maybe not!!");
 
     let reason = args.slice(1).join(' ');
     if(!reason) reason = "No reason provided";
     
     await member.ban(reason)
       .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
-    message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
+    message.reply(`${member.user.tag} has gotten the big booty ban by ${message.author.tag} because: ${reason}`);
   }
   
   if(command === "purge") {
@@ -124,7 +127,7 @@ client.on("message", async message => {
     const deleteCount = parseInt(args[0], 10);
     
     // Ooooh nice, combined conditions. <3
-    if(!deleteCount || deleteCount < 2 || deleteCount > 100)
+    if(!deleteCount || deleteCount < 2 || deleteCount > 20)
       return message.reply("Please provide a number between 2 and 100 for the number of messages to delete");
     
     // So we get our messages, and delete them. Simple enough, right?
@@ -132,6 +135,23 @@ client.on("message", async message => {
     message.channel.bulkDelete(fetched)
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
   }
+
+  if (message.content === "listemojis") {
+  const emojiList = message.guild.emojis.map(e=>e.toString()).join(" ");
+  message.channel.send(emojiList);
+ }
+
+if(message.content === "ayy") {
+   const ayy = client.emojis.find("name", "ayy");
+   message.reply(`${ayy} LMAO`);
+}
+
+if(message.content === ":poop:") {
+  const poop = client.emojis.find("poop");
+  message.reply(:poop:);
+}
+  
+ 
 });
 
 client.login(config.token);
